@@ -3,5 +3,3 @@ FROM minio/minio:latest
 # 시간 동기화
 ENV TZ=Asia/Seoul
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-ENTRYPOINT ["server", "--console-address", ":9001"]
