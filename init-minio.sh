@@ -31,6 +31,21 @@ log "minio image remove and build."
 docker rmi minio:latest || true
 docker build -t minio:latest .
 
+# 필요한 환경변수를 Vault에서 가져오기
+log "Get credential data from vault..."
+
+TOKEN_RESPONSES=$(curl -s --request POST \
+  --data "{\"role_id\":\"${ROLE_ID}\", \"secret_id\":\"${SECRET_ID}\"}" \
+  https://vault.nansan.site/v1/auth/approle/login)
+
+CLIENT_TOKEN=$(echo "$TOKEN_RESPONSES" | jq -r '.auth.client_token')
+
+SECRET_RESPONSE=$(curl -s --header "X-Vault-Token: ${CLIENT_TOKEN}" \
+  --request GET https://vault.nansan.site/v1/kv/data/auth)
+
+MINIO_ROOT_USER=$(echo "$SECRET_RESPONSE" | jq -r '.data.data.minio.username')
+MINIO_ROOT_PASSWORD=$(echo "$SECRET_RESPONSE" | jq -r '.data.data.minio.password')
+
 # Docker로 minio 서비스 실행
 log "Execute minio..."
 docker run -dt \
