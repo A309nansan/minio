@@ -52,14 +52,14 @@ MINIO_ROOT_PASSWORD=$(echo "$SECRET_RESPONSE" | jq -r '.data.data.minio.password
 
 # Docker로 minio 서비스 실행
 log "Execute minio..."
-docker run -dt \
+docker run -d \
   --name minio \
   --restart unless-stopped \
+  -v /var/minio:/mnt/data \
   -e MINIO_ROOT_USER=${MINIO_ROOT_USER} \
   -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} \
   -e MINIO_VOLUMES=/mnt/data \
   -e MINIO_OPTS="--console-address :9001" \
-  -v /var/minio:/mnt/data \
   -p 9000:9000 \
   -p 9001:9001 \
   --network nansan-network \
