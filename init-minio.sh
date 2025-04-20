@@ -26,6 +26,10 @@ else
   docker network create --driver bridge nansan-network
 fi
 
+# 실행중인 minio container를 삭제
+log "minio container remove"
+docker rm -f minio
+
 # 기존 minio 이미지를 삭제하고 새로 빌드
 log "minio image remove and build."
 docker rmi minio:latest || true
@@ -55,9 +59,9 @@ docker run -dt \
   -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} \
   -e MINIO_VOLUMES=/mnt/data \
   -e MINIO_OPTS="--console-address :9001" \
+  -v /var/minio:/mnt/data \
   -p 9000:9000 \
   -p 9001:9001 \
-  -v /var/minio:/mnt/data \
   --network nansan-network \
   minio:latest server --console-address ":9001"
 
