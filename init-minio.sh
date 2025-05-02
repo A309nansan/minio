@@ -60,8 +60,8 @@ docker run -d \
   -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} \
   -e MINIO_VOLUMES=/mnt/data \
   -e MINIO_OPTS="--console-address :9001" \
-  -p 9000:9000 \
-  -p 9001:9001 \
+  -p 13111:9000 \
+  -p 13110:9001 \
   --network nansan-network \
   minio:latest server --console-address ":9001"
 
