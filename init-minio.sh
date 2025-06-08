@@ -71,12 +71,11 @@ if ! command -v mc &> /dev/null; then
   log "Installing MinIO client..."
   wget -q https://dl.min.io/client/mc/release/linux-amd64/mc
   chmod +x mc
-  sudo mv mc /usr/local/bin/
 fi
 
 # mc alias 등록 및 익명 접근 정책 설정
 log "Setting anonymous access policy..."
-mc alias set local http://localhost:13111 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
-mc anonymous set download local/nansan
+./mc alias set local http://localhost:13111 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
+./mc anonymous set download local/nansan
 
 echo "작업이 완료되었습니다."
