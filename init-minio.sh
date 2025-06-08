@@ -67,15 +67,27 @@ docker run -d \
   minio:latest server --console-address ":9001"
 
 # MinIO Client 설치 (최초만 설치되도록)
-if ! command -v mc &> /dev/null; then
+if ! command -v ./mc &> /dev/null; then
   log "Installing MinIO client..."
   wget -q https://dl.min.io/client/mc/release/linux-amd64/mc
   chmod +x mc
 fi
 
+# MinIO 준비될 때까지 대기
+log "Waiting for MinIO to become available..."
+for i in {1..15}; do
+  if curl -s "http://localhost:13111/minio/health/ready" | grep -q "OK"; then
+    log "MinIO is ready."
+    break
+  fi
+  log "Waiting... ($i)"
+  sleep 2
+done
+
 # mc alias 등록 및 익명 접근 정책 설정
 log "Setting anonymous access policy..."
 ./mc alias set local http://localhost:13111 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
 ./mc anonymous set download local/nansan
+
 
 echo "작업이 완료되었습니다."
