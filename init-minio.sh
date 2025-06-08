@@ -60,6 +60,7 @@ docker run -d \
   -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} \
   -e MINIO_VOLUMES=/mnt/data \
   -e MINIO_OPTS="--console-address :9001" \
+  -e MINIO_IDENTITY_ALLOW_ANONYMOUS=on \
   -p 13111:9000 \
   -p 13110:9001 \
   --network nansan-network \
